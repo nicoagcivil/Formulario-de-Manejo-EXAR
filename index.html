@@ -42,12 +42,26 @@
       font-size: 12px;
       color: #cbd5e1;
     }
+    .header-badges {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
     .badge-ref {
       background: rgba(255,255,255,0.15);
-      padding: 6px 12px;
+      padding: 5px 11px;
       border-radius: 5px;
       font-size: 12px;
       font-weight: bold;
+    }
+    .badge-ver {
+      font-size: 10.5px;
+      color: #cbd5e1;
+      background: rgba(0,0,0,0.22);
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.4px;
     }
     form {
       padding: 25px;
@@ -209,8 +223,15 @@
     .btn-nuevo:hover {
       background: #163a5c;
     }
+    .footer-version {
+      text-align: right;
+      font-size: 10.5px;
+      color: #94a3b8;
+      padding: 0 25px 12px;
+    }
     @media (max-width: 600px) {
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .header-badges { align-items: flex-start; }
     }
   </style>
 </head>
@@ -222,17 +243,13 @@
       <h1>Autorización Manejo de Vehículo</h1>
       <p>Solicitud y Entrega de Licencia Interna</p>
     </div>
-    <div class="badge-ref">REF: PRO-SST-02-REG-01</div>
+    <div class="header-badges">
+      <div class="badge-ref">REF: PRO-SST-02-REG-01</div>
+      <div class="badge-ver" id="badgeVersion">Rev. 1.2</div>
+    </div>
   </div>
 
   <form id="solicitudForm" onsubmit="enviarDatos(event)">
-    <div class="grid-2">
-      <div class="form-group">
-        <label>FECHA DE PRESENTACIÓN *</label>
-        <input type="date" id="fechaPresentacion" required>
-      </div>
-    </div>
-
     <div class="section-title">1. Datos del Conductor</div>
     <div class="grid-2">
       <div class="form-group">
@@ -356,12 +373,18 @@
     <p style="font-size: 13px; color: #64748b;">Selecciona este código en la hoja <b>Formulario_Carga</b> para imprimir el documento y firmarlo.</p>
     <button type="button" class="btn-nuevo" onclick="nuevoFormulario()">➕ Cargar Otro Conductor</button>
   </div>
+
+  <div class="footer-version" id="footerVersion">Versión Web: Rev. 1.2</div>
 </div>
 
 <script>
+  // CONTADOR DE REVISIÓN DEL HTML (Sube este número en cada actualización)
+  const HTML_VERSION = "Rev. 1.2";
+
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyaxb4QVrhyX6Bwz14r7Ca9uwuwpheG5vPRxFcdPoLPLZSu3opp-uyeAh6L_Hx8vX-0/exec";
 
-  document.getElementById('fechaPresentacion').valueAsDate = new Date();
+  document.getElementById('badgeVersion').innerText = HTML_VERSION;
+  document.getElementById('footerVersion').innerText = "Versión Web: " + HTML_VERSION;
 
   function toggleNroRegistro() {
     const val = document.getElementById('registroPrevio').value;
@@ -400,7 +423,7 @@
     btn.innerText = '⏳ Guardando en Base de Datos...';
 
     const payload = {
-      fechaPresentacion: document.getElementById('fechaPresentacion').value,
+      versionHtml: HTML_VERSION,
       apellidoNombre: document.getElementById('apellidoNombre').value.trim(),
       dni: document.getElementById('dni').value.trim(),
       empresa: document.getElementById('empresa').value.trim(),
@@ -446,7 +469,6 @@
 
   function nuevoFormulario() {
     document.getElementById('solicitudForm').reset();
-    document.getElementById('fechaPresentacion').valueAsDate = new Date();
     toggleNroRegistro();
     toggleVtoLinti();
     const btn = document.getElementById('btnEnviar');
