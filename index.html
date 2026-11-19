@@ -359,10 +359,8 @@
 </div>
 
 <script>
-  // URL de implementación de Google Apps Script
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyaxb4QVrhyX6Bwz14r7Ca9uwuwpheG5vPRxFcdPoLPLZSu3opp-uyeAh6L_Hx8vX-0/exec";
 
-  // Inicializar fecha de hoy
   document.getElementById('fechaPresentacion').valueAsDate = new Date();
 
   function toggleNroRegistro() {
@@ -432,24 +430,17 @@
         .withFailureHandler(err => mostrarError(err.message))
         .procesarFormularioWeb(payload);
     } else {
-      fetch(WEB_APP_URL, {
-        method: 'POST',
-        redirect: 'follow',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8'
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.text())
-      .then(text => {
-        const data = JSON.parse(text);
-        if (data.status === 'ok') {
-          mostrarExito(data.id);
-        } else {
-          mostrarError(data.message || 'No se pudo procesar en Google Sheets');
-        }
-      })
-      .catch(err => mostrarError(err.message));
+      const urlConDatos = WEB_APP_URL + "?datos=" + encodeURIComponent(JSON.stringify(payload));
+      fetch(urlConDatos)
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === 'ok') {
+            mostrarExito(data.id);
+          } else {
+            mostrarError(data.message || 'No se pudo procesar en Google Sheets');
+          }
+        })
+        .catch(err => mostrarError(err.message));
     }
   }
 
