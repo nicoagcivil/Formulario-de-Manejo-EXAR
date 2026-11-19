@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 20px;
+      color: #1e293b;
+    }
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+    }
+    .header {
+      background-color: #1F4E78;
+      color: white;
+      padding: 20px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: 0.3px;
+    }
+    .header p {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+    .badge-ref {
+      background: rgba(255,255,255,0.15);
+      padding: 6px 12px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    form {
+      padding: 25px;
+    }
+    .section-title {
+      background-color: #D9E2F3;
+      color: #1F4E78;
+      font-weight: bold;
+      font-size: 13px;
+      padding: 8px 12px;
+      border-left: 4px solid #1F4E78;
+      margin: 22px 0 14px 0;
+      text-transform: uppercase;
+    }
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 12px;
+    }
+    label {
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #334155;
+    }
+    input[type="text"], input[type="date"], input[type="tel"], select, textarea {
+      padding: 9px 11px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #1F4E78;
+      box-shadow: 0 0 0 2px rgba(31,78,120,0.15);
+    }
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: 10px;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .checkbox-item input {
+      width: 17px;
+      height: 17px;
+      cursor: pointer;
+    }
+    .sitio-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .sitio-card input {
+      margin-top: 3px;
+      width: 17px;
+      height: 17px;
+    }
+    .sitio-card div strong {
+      font-size: 13.5px;
+      display: block;
+    }
+    .sitio-card div span {
+      font-size: 12px;
+      color: #64748b;
+    }
+    .declaracion {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: bold;
+      color: #78350f;
+      margin-top: 18px;
+      line-height: 1.4;
+    }
+    .btn-submit {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px;
+      background-color: #1E8449;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-submit:hover {
+      background-color: #145A32;
+    }
+    .btn-submit:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+    }
+    #resultado {
+      display: none;
+      padding: 30px;
+      text-align: center;
+    }
+    .id-box {
+      display: inline-block;
+      background: #D9E2F3;
+      color: #1F4E78;
+      font-size: 26px;
+      font-weight: bold;
+      padding: 10px 25px;
+      border-radius: 8px;
+      border: 2px dashed #1F4E78;
+      margin: 15px 0;
+    }
+    @media (max-width: 600px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div>
+      <h1>Autorización Manejo de Vehículo</h1>
+      <p>Solicitud y Entrega de Licencia Interna</p>
+    </div>
+    <div class="badge-ref">REF: PRO-SST-02-REG-01</div>
+  </div>
+
+  <form id="solicitudForm" onsubmit="enviarDatos(event)">
+    <div class="grid-2">
+      <div class="form-group">
+        <label>FECHA DE PRESENTACIÓN *</label>
+        <input type="date" id="fechaPresentacion" required>
+      </div>
+    </div>
+
+    <div class="section-title">1. Datos del Conductor</div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Apellido y Nombre *</label>
+        <input type="text" id="apellidoNombre" placeholder="Ej. PEREZ JUAN CARLOS" required>
+      </div>
+      <div class="form-group">
+        <label>DNI *</label>
+        <input type="text" id="dni" placeholder="Sin puntos" required>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Empresa *</label>
+        <input type="text" id="empresa" placeholder="Nombre de la empresa" required>
+      </div>
+      <div class="form-group">
+        <label>Cargo *</label>
+        <input type="text" id="cargo" placeholder="Ej. Chofer / Supervisor" required>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>¿El personal ya cuenta con un registro de Exar? *</label>
+        <select id="registroPrevio" onchange="toggleNroRegistro()" required>
+          <option value="NO">NO</option>
+          <option value="SI">SI</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>N° Registro (si respondió SI)</label>
+        <input type="text" id="nroRegistroAnterior" placeholder="N° de licencia anterior" disabled>
+      </div>
+    </div>
+
+    <div class="section-title">2. Datos de la Licencia</div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Vencimiento Licencia Nacional *</label>
+        <input type="date" id="vtoLicencia" required>
+      </div>
+      <div class="form-group">
+        <label>Categoría *</label>
+        <input type="text" id="categoria" placeholder="Ej. B1, C1, D2" required>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>¿Posee LINTI? *</label>
+        <select id="linti" onchange="toggleVtoLinti()" required>
+          <option value="NO">NO</option>
+          <option value="SI">SI</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Vencimiento LINTI (si respondió SI)</label>
+        <input type="date" id="vtoLinti" disabled>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Observaciones / Restricciones</label>
+      <input type="text" id="observaciones" placeholder="Ej. Usa anteojos / Ninguna">
+    </div>
+
+    <div class="section-title">3. Datos de Contacto en Caso de Emergencias</div>
+    <div class="grid-3">
+      <div class="form-group">
+        <label>Apellido y Nombre *</label>
+        <input type="text" id="emergenciaNombre" required>
+      </div>
+      <div class="form-group">
+        <label>Dirección *</label>
+        <input type="text" id="emergenciaDireccion" required>
+      </div>
+      <div class="form-group">
+        <label>Teléfono de contacto *</label>
+        <input type="tel" id="emergenciaTelefono" required>
+      </div>
+    </div>
+
+    <div class="section-title">4. Vehículos Autorizado a Conducir</div>
+    <div class="checkbox-grid">
+      <label class="checkbox-item"><input type="checkbox" id="vehCamioneta"> Camioneta</label>
+      <label class="checkbox-item"><input type="checkbox" id="vehCamion"> Camión</label>
+      <label class="checkbox-item"><input type="checkbox" id="vehTPersonal"> T. Personal</label>
+      <label class="checkbox-item"><input type="checkbox" id="vehMViales"> M. Viales</label>
+      <label class="checkbox-item"><input type="checkbox" id="vehEspeciales"> Especiales</label>
+    </div>
+
+    <div class="section-title">5. Sitios Donde se Autoriza Manejar</div>
+    <label class="sitio-card">
+      <input type="checkbox" id="sitioDentro">
+      <div>
+        <strong>Dentro de Sitio (Operativos EXAR)</strong>
+        <span>Caminos comunes – Para ingreso a zonas rojas/restringidas solo con la autorización correspondiente</span>
+      </div>
+    </label>
+    <label class="sitio-card">
+      <input type="checkbox" id="sitioFuera">
+      <div>
+        <strong>Fuera de Sitio</strong>
+        <span>Zonas aledañas – San Salvador de Jujuy - Salta</span>
+      </div>
+    </label>
+
+    <div class="declaracion">
+      A TRAVES DE LA PRESENTE AUTORIZACION, DECLARO CONOCER Y ACEPTAR TODA LA INFORMACIÓN SOBRE LOS RIESGOS ASOSIADOS A LA CONDUCCIÓN DE VEHÍCULOS, COMO ASÍ TAMBIÉN LAS MEDIDAS PREVENTIVAS QUE DEBO TOMAR PARA QUE LA CONDUCCIÓN SEA SEGURA.
+    </div>
+
+    <button type="submit" class="btn-submit" id="btnEnviar">💾 GUARDAR SOLICITUD Y GENERAR NÚMERO</button>
+  </form>
+
+  <div id="resultado">
+    <h2 style="color: #1E8449; margin-bottom: 5px;">✅ ¡Solicitud Registrada con Éxito!</h2>
+    <p style="color: #475569;">Los datos ya están guardados en la base de datos. Tu número de formulario es:</p>
+    <div class="id-box" id="numeroGenerado">REG-0001</div>
+    <p style="font-size: 13px; color: #64748b;">Selecciona este código en la hoja <b>Formulario_Carga</b> para imprimir el documento y firmarlo.</p>
+    <button onclick="nuevoFormulario()" style="margin-top: 15px; padding: 10px 22px; background: #1F4E78; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+      ➕ Cargar Otro Conductor
+    </button>
+  </div>
+</div>
+
+<script>
+  // Poner fecha de hoy por defecto
+  document.getElementById('fechaPresentacion').valueAsDate = new Date();
+
+  function toggleNroRegistro() {
+    const val = document.getElementById('registroPrevio').value;
+    const input = document.getElementById('nroRegistroAnterior');
+    input.disabled = (val !== 'SI');
+    if (val !== 'SI') input.value = '';
+  }
+
+  function toggleVtoLinti() {
+    const val = document.getElementById('linti').value;
+    const input = document.getElementById('vtoLinti');
+    input.disabled = (val !== 'SI');
+    if (val !== 'SI') input.value = '';
+  }
+
+  function enviarDatos(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnEnviar');
+    btn.disabled = true;
+    btn.innerText = '⏳ Guardando en Base de Datos...';
+
+    const payload = {
+      fechaPresentacion: document.getElementById('fechaPresentacion').value,
+      apellidoNombre: document.getElementById('apellidoNombre').value,
+      dni: document.getElementById('dni').value,
+      empresa: document.getElementById('empresa').value,
+      cargo: document.getElementById('cargo').value,
+      registroPrevio: document.getElementById('registroPrevio').value,
+      nroRegistroAnterior: document.getElementById('nroRegistroAnterior').value,
+      vtoLicencia: document.getElementById('vtoLicencia').value,
+      categoria: document.getElementById('categoria').value,
+      linti: document.getElementById('linti').value,
+      vtoLinti: document.getElementById('vtoLinti').value,
+      observaciones: document.getElementById('observaciones').value,
+      emergenciaNombre: document.getElementById('emergenciaNombre').value,
+      emergenciaDireccion: document.getElementById('emergenciaDireccion').value,
+      emergenciaTelefono: document.getElementById('emergenciaTelefono').value,
+      vehCamioneta: document.getElementById('vehCamioneta').checked,
+      vehCamion: document.getElementById('vehCamion').checked,
+      vehTPersonal: document.getElementById('vehTPersonal').checked,
+      vehMViales: document.getElementById('vehMViales').checked,
+      vehEspeciales: document.getElementById('vehEspeciales').checked,
+      sitioDentro: document.getElementById('sitioDentro').checked,
+      sitioFuera: document.getElementById('sitioFuera').checked
+    };
+
+    google.script.run
+      .withSuccessHandler(function(idGenerado) {
+        document.getElementById('solicitudForm').style.display = 'none';
+        document.getElementById('numeroGenerado').innerText = idGenerado;
+        document.getElementById('resultado').style.display = 'block';
+      })
+      .withFailureHandler(function(err) {
+        alert('Error al guardar: ' + err.message);
+        btn.disabled = false;
+        btn.innerText = '💾 GUARDAR SOLICITUD Y GENERAR NÚMERO';
+      })
+      .procesarFormularioWeb(payload);
+  }
+
+  function nuevoFormulario() {
+    document.getElementById('solicitudForm').reset();
+    document.getElementById('fechaPresentacion').valueAsDate = new Date();
+    toggleNroRegistro();
+    toggleVtoLinti();
+    const btn = document.getElementById('btnEnviar');
+    btn.disabled = false;
+    btn.innerText = '💾 GUARDAR SOLICITUD Y GENERAR NÚMERO';
+    document.getElementById('resultado').style.display = 'none';
+    document.getElementById('solicitudForm').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
