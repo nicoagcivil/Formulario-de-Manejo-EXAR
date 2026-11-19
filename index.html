@@ -3,6 +3,8 @@
 <head>
   <base target="_top">
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autorización Manejo de Vehículo - PRO-SST-02-REG-01</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -27,6 +29,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
     .header h1 {
       margin: 0;
@@ -94,6 +98,10 @@
       border-color: #1F4E78;
       box-shadow: 0 0 0 2px rgba(31,78,120,0.15);
     }
+    input:disabled {
+      background-color: #f1f5f9;
+      color: #94a3b8;
+    }
     .checkbox-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
@@ -125,6 +133,7 @@
       display: flex;
       align-items: flex-start;
       gap: 10px;
+      cursor: pointer;
     }
     .sitio-card input {
       margin-top: 3px;
@@ -172,19 +181,33 @@
     }
     #resultado {
       display: none;
-      padding: 30px;
+      padding: 35px 25px;
       text-align: center;
     }
     .id-box {
       display: inline-block;
       background: #D9E2F3;
       color: #1F4E78;
-      font-size: 26px;
+      font-size: 28px;
       font-weight: bold;
-      padding: 10px 25px;
+      padding: 12px 30px;
       border-radius: 8px;
       border: 2px dashed #1F4E78;
       margin: 15px 0;
+    }
+    .btn-nuevo {
+      margin-top: 15px;
+      padding: 11px 24px;
+      background: #1F4E78;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-nuevo:hover {
+      background: #163a5c;
     }
     @media (max-width: 600px) {
       .grid-2, .grid-3 { grid-template-columns: 1fr; }
@@ -331,20 +354,22 @@
     <p style="color: #475569;">Los datos ya están guardados en la base de datos. Tu número de formulario es:</p>
     <div class="id-box" id="numeroGenerado">REG-0001</div>
     <p style="font-size: 13px; color: #64748b;">Selecciona este código en la hoja <b>Formulario_Carga</b> para imprimir el documento y firmarlo.</p>
-    <button onclick="nuevoFormulario()" style="margin-top: 15px; padding: 10px 22px; background: #1F4E78; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
-      ➕ Cargar Otro Conductor
-    </button>
+    <button type="button" class="btn-nuevo" onclick="nuevoFormulario()">➕ Cargar Otro Conductor</button>
   </div>
 </div>
 
 <script>
-  // Poner fecha de hoy por defecto
+  // URL oficial de tu implementación en Google Apps Script
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyaxb4QVrhyX6Bwz14r7Ca9uwuwpheG5vPRxFcdPoLPLZSu3opp-uyeAh6L_Hx8vX-0/exec";
+
+  // Inicializar fecha de hoy
   document.getElementById('fechaPresentacion').valueAsDate = new Date();
 
   function toggleNroRegistro() {
     const val = document.getElementById('registroPrevio').value;
     const input = document.getElementById('nroRegistroAnterior');
     input.disabled = (val !== 'SI');
+    input.required = (val === 'SI');
     if (val !== 'SI') input.value = '';
   }
 
@@ -352,7 +377,22 @@
     const val = document.getElementById('linti').value;
     const input = document.getElementById('vtoLinti');
     input.disabled = (val !== 'SI');
+    input.required = (val === 'SI');
     if (val !== 'SI') input.value = '';
+  }
+
+  function mostrarExito(idGenerado) {
+    document.getElementById('solicitudForm').style.display = 'none';
+    document.getElementById('numeroGenerado').innerText = idGenerado;
+    document.getElementById('resultado').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function mostrarError(mensaje) {
+    alert('Error al guardar la solicitud: ' + mensaje);
+    const btn = document.getElementById('btnEnviar');
+    btn.disabled = false;
+    btn.innerText = '💾 GUARDAR SOLICITUD Y GENERAR NÚMERO';
   }
 
   function enviarDatos(e) {
@@ -363,20 +403,20 @@
 
     const payload = {
       fechaPresentacion: document.getElementById('fechaPresentacion').value,
-      apellidoNombre: document.getElementById('apellidoNombre').value,
-      dni: document.getElementById('dni').value,
-      empresa: document.getElementById('empresa').value,
-      cargo: document.getElementById('cargo').value,
+      apellidoNombre: document.getElementById('apellidoNombre').value.trim(),
+      dni: document.getElementById('dni').value.trim(),
+      empresa: document.getElementById('empresa').value.trim(),
+      cargo: document.getElementById('cargo').value.trim(),
       registroPrevio: document.getElementById('registroPrevio').value,
-      nroRegistroAnterior: document.getElementById('nroRegistroAnterior').value,
+      nroRegistroAnterior: document.getElementById('nroRegistroAnterior').value.trim(),
       vtoLicencia: document.getElementById('vtoLicencia').value,
-      categoria: document.getElementById('categoria').value,
+      categoria: document.getElementById('categoria').value.trim(),
       linti: document.getElementById('linti').value,
       vtoLinti: document.getElementById('vtoLinti').value,
-      observaciones: document.getElementById('observaciones').value,
-      emergenciaNombre: document.getElementById('emergenciaNombre').value,
-      emergenciaDireccion: document.getElementById('emergenciaDireccion').value,
-      emergenciaTelefono: document.getElementById('emergenciaTelefono').value,
+      observaciones: document.getElementById('observaciones').value.trim(),
+      emergenciaNombre: document.getElementById('emergenciaNombre').value.trim(),
+      emergenciaDireccion: document.getElementById('emergenciaDireccion').value.trim(),
+      emergenciaTelefono: document.getElementById('emergenciaTelefono').value.trim(),
       vehCamioneta: document.getElementById('vehCamioneta').checked,
       vehCamion: document.getElementById('vehCamion').checked,
       vehTPersonal: document.getElementById('vehTPersonal').checked,
@@ -386,18 +426,28 @@
       sitioFuera: document.getElementById('sitioFuera').checked
     };
 
-    google.script.run
-      .withSuccessHandler(function(idGenerado) {
-        document.getElementById('solicitudForm').style.display = 'none';
-        document.getElementById('numeroGenerado').innerText = idGenerado;
-        document.getElementById('resultado').style.display = 'block';
+    // Si se ejecuta dentro del entorno de Google Apps Script (Web App oficial)
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(mostrarExito)
+        .withFailureHandler(err => mostrarError(err.message))
+        .procesarFormularioWeb(payload);
+    } else {
+      // Si se abre como archivo HTML externo/local, envía vía POST a tu WEB_APP_URL
+      fetch(WEB_APP_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
       })
-      .withFailureHandler(function(err) {
-        alert('Error al guardar: ' + err.message);
-        btn.disabled = false;
-        btn.innerText = '💾 GUARDAR SOLICITUD Y GENERAR NÚMERO';
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          mostrarExito(data.id);
+        } else {
+          mostrarError(data.message || 'Respuesta inesperada del servidor');
+        }
       })
-      .procesarFormularioWeb(payload);
+      .catch(err => mostrarError(err.message));
+    }
   }
 
   function nuevoFormulario() {
